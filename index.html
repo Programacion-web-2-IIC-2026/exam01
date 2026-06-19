@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokédex – ITI-523</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+  />
+
+  <link rel="stylesheet" href="estilos.css">
+ 
+</head>
+<body>
+
+
+  
+<header>
+  <img
+    class="logo"
+    src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg"
+    alt="Pokémon"
+  />
+  <div class="gen-wrapper">
+    <label for="genSelect">Generación</label>
+    <select id="genSelect">
+      <option value="0|151">Primera</option>
+      <option value="151|100">Segunda</option>
+      <option value="251|135">Tercera</option>
+      <option value="386|107">Cuarta</option>
+      <option value="493|156">Quinta</option>
+    </select>
+  </div>
+</header>
+
+<!-- ═══ GRID ═════════════════════ -->
+<main>
+  <div id="pokedexGrid">
+    <div id="statusMsg">
+      <div class="spinner"></div><br>Cargando Pokémons…
+    </div>
+  </div>
+</main>
+
+<!-- ═══ MODAL ═════════════════════════════════════════════════ -->
+<div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div id="modalBox">
+    <button id="modalClose" aria-label="Cerrar">✕</button>
+
+    <div id="modalHeader">
+      <h2 id="modalTitle">—</h2>
+    </div>
+
+    <div id="modalBody">
+      <img id="modalImg" src="" alt="" />
+      <div id="modalInfo">
+        <div class="info-row"><span class="lbl">Generación:</span><span id="mGen">—</span></div>
+        <div class="info-row"><span class="lbl">Pokémon ID:</span><span id="mId">—</span></div>
+        <div class="info-row"><span class="lbl">Peso:</span><span id="mWeight">—</span></div>
+        <div class="info-row"><span class="lbl">Altura:</span><span id="mHeight">—</span></div>
+        <div class="info-row" style="flex-direction:column; gap:4px;">
+          <span class="lbl">Tipos:</span>
+          <div id="mTypes"></div>
+        </div>
+        <div class="info-row" style="flex-direction:column; gap:4px; margin-top:4px;">
+          <span class="lbl">Habilidades:</span>
+          <div id="mAbilities"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="movesSection">
+      <h4>Movimientos</h4>
+      <div id="movesList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- code -->
+<script src="code.js"></script>
+
+</body>
+</html>
