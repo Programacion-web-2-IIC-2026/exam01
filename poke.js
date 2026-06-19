@@ -1,4 +1,6 @@
-/* ── Type color palette ─────────────────────────────────── */
+/*jshint sub:true*/
+
+// ── Type color map ──────────────────────────────────────
 const TYPE_COLORS = {
   normal:'#a8a878', fire:'#f08030', water:'#6890f0', electric:'#f8d030',
   grass:'#78c850', ice:'#98d8d8', fighting:'#c03028', poison:'#a040a0',
@@ -7,8 +9,18 @@ const TYPE_COLORS = {
   steel:'#b8b8d0', fairy:'#ee99ac'
 };
 
-/* ── Generation mapping ─────────────────────────────────── */
-const GEN_LABELS = ['01','01','01','01','01','02','02','03','03','04','04','05','05'];
+// ── Helper: clase CSS para tipos ────────────────────────
+function getTypeClass(type) {
+  var map = {
+    grass: 'grass', fire: 'fire', water: 'water', bug: 'bug', normal: 'normal',
+    poison: 'poison', electric: 'electric', ground: 'ground', fairy: 'fairy',
+    fighting: 'fighting', psychic: 'psychic', rock: 'rock', ghost: 'ghost',
+    ice: 'ice', dragon: 'dragon', dark: 'dark', steel: 'steel', flying: 'flying'
+  };
+  return map[type] || '';
+}
+
+// ── Generation labels ────────────────────────────────────
 function getGenLabel(id) {
   if (id <= 151) return '01';
   if (id <= 251) return '02';
@@ -17,7 +29,7 @@ function getGenLabel(id) {
   return '05';
 }
 
-/* ── XMLHttpRequest helper ──────────────────────────────── */
+// ── XMLHttpRequest helper ────────────────────────────────
 function xhrGet(url, onSuccess, onError) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
@@ -33,16 +45,15 @@ function xhrGet(url, onSuccess, onError) {
   xhr.send();
 }
 
-/* ── Image URL builder ──────────────────────────────────── */
+// ── Image URL builder ────────────────────────────────────
 function imgByNumber(id) {
-  // PokeAPI's official sprite CDN — no CORS restrictions
   return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + id + '.png';
 }
 
-/* ── Current generation index ───────────────────────────── */
-var currentGenIndex = 1; // 1..5
+// ── Current generation index ─────────────────────────────
+var currentGenIndex = 1;
 
-/* ── Load pokémon list ──────────────────────────────────── */
+// ── Load pokémon list ────────────────────────────────────
 function loadGeneration(offsetLimit) {
   var parts  = offsetLimit.split('|');
   var offset = parts[0];
@@ -60,7 +71,6 @@ function loadGeneration(offsetLimit) {
 
     for (var i = 0; i < results.length; i++) {
       (function(poke, idx) {
-        // derive ID from URL  e.g. .../pokemon/25/
         var urlParts = poke.url.replace(/\/$/, '').split('/');
         var pokeId   = parseInt(urlParts[urlParts.length - 1]);
 
@@ -105,7 +115,7 @@ function loadGeneration(offsetLimit) {
   });
 }
 
-/* PARA VER INFORMACION DEL POQUEMON SELECCIONADO */
+// ── ABRIR MODAL (con estilos oscuros y hover) ─────────────
 function openModal(pokeId, pokeName, genNum) {
   // reset
   document.getElementById('modalTitle').textContent = pokeName;
@@ -113,7 +123,7 @@ function openModal(pokeId, pokeName, genNum) {
   document.getElementById('mId').textContent       = '#' + String(pokeId).padStart(3,'0');
   document.getElementById('mWeight').textContent   = '…';
   document.getElementById('mHeight').textContent   = '…';
-  document.getElementById('mTypes').innerHTML      = '…';
+  document.getElementById('mTypes').innerHTML      = '';
   document.getElementById('mAbilities').innerHTML  = '…';
   document.getElementById('movesList').innerHTML   = '<span style="color:#999;font-size:.8rem">Cargando…</span>';
 
@@ -133,14 +143,13 @@ function openModal(pokeId, pokeName, genNum) {
     document.getElementById('mWeight').textContent = (d.weight / 10).toFixed(1) + ' kgs';
     document.getElementById('mHeight').textContent = (d.height / 10).toFixed(1) + ' mts';
 
-    // types
+    // types (usando clases CSS en lugar de style.background)
     var typesEl = document.getElementById('mTypes');
     typesEl.innerHTML = '';
     d.types.forEach(function(t) {
       var badge = document.createElement('span');
-      badge.className = 'type-badge';
+      badge.className = 'type-badge ' + getTypeClass(t.type.name);
       badge.textContent = t.type.name;
-      badge.style.background = TYPE_COLORS[t.type.name] || '#888';
       typesEl.appendChild(badge);
     });
 
@@ -166,7 +175,7 @@ function openModal(pokeId, pokeName, genNum) {
   });
 }
 
-/* ── Close modal ─────────────────────────────────────────── */
+// ── Cerrar modal ──────────────────────────────────────────
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
@@ -180,11 +189,11 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeModal();
 });
 
-/* ── Generation selector ─────────────────────────────────── */
+// ── Generation selector ───────────────────────────────────
 document.getElementById('genSelect').addEventListener('change', function() {
   currentGenIndex = this.selectedIndex + 1;
   loadGeneration(this.value);
 });
 
-/* ── Init ────────────────────────────────────────────────── */
+// ── Init ──────────────────────────────────────────────────
 loadGeneration('0|151');
