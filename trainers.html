@@ -1,0 +1,43 @@
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex | Entrenadores</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    </head>
+    <body>
+
+    <header>
+        <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokémon" />
+        <nav class="main-nav">
+            <a href="index.html" class="active">Pokédex</a>
+            <a href="trainers.html">Entrenadores</a>
+            <a href="add-trainer.html">+ Entrenador</a>
+            <a href="teams.html">Equipos</a>
+            <a href="add-team.html">+ Equipo</a>
+        </nav>
+    </header>
+
+    <main class="page active">
+        <h2 class="page-title">Entrenadores</h2>
+        <div id="trainersList" class="trainers-grid">
+        <div class="empty-message">Cargando entrenadores…</div>
+        </div>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/trainers.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initDB().then(function() {
+        renderTrainers();
+        }).catch(function(err) {
+        console.error('Error DB:', err);
+        });
+    });
+    </script>
+    </body>
+    </html>

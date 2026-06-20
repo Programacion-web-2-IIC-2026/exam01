@@ -1,0 +1,98 @@
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex | Agregar Equipo</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    </head>
+    <body>
+
+    <header>
+        <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokémon" />
+        <nav class="main-nav">
+            <a href="index.html" class="active">Pokédex</a>
+            <a href="trainers.html">Entrenadores</a>
+            <a href="add-trainer.html">+ Entrenador</a>
+            <a href="teams.html">Equipos</a>
+            <a href="add-team.html">+ Equipo</a>
+        </nav>
+    </header>
+
+    <main class="page active">
+        <h2 class="page-title"> + Nuevo Equipo</h2>
+        <form id="teamForm" class="form-card">
+        <div class="form-group">
+            <label for="teamName">Nombre del equipo</label>
+            <input type="text" id="teamName" placeholder="Equipo Relámpago" required />
+        </div>
+        <div class="form-group">
+            <label for="teamImage">URL de la imagen del equipo (opcional)</label>
+            <input type="url" id="teamImage" placeholder="https://ejemplo.com/equipo.jpg" />
+        </div>
+        <div class="form-group">
+            <label for="teamTrainer">Entrenador encargado</label>
+            <select id="teamTrainer" required>
+            <option value="">Seleccionar entrenador…</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Pokémon del equipo </label>
+            <div class="pokemon-selector">
+            <div class="search-box">
+                <input type="text" id="pokemonSearch" placeholder="Buscar Pokémon…" />
+                <button type="button" id="addPokemonBtn" class="btn-sm">+ Agregar</button>
+            </div>
+            <div id="selectedPokemons" class="selected-pokemons"></div>
+            <div id="pokemonSuggestions" class="suggestions"></div>
+            </div>
+        </div>
+        <button type="submit" class="btn-primary">Guardar Equipo</button>
+        </form>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/teams.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initDB().then(function() {
+        // Cargar entrenadores en el select
+        loadTrainerSelect();
+        // Cargar nombres de Pokémon 
+        if (allPokemonNames.length === 0) {
+            var generations = [
+            { offset: 0, limit: 151 },
+            { offset: 151, limit: 100 },
+            { offset: 251, limit: 135 },
+            { offset: 386, limit: 107 },
+            { offset: 493, limit: 156 }
+            ];
+            var total = generations.length;
+            var loaded = 0;
+            generations.forEach(function(gen) {
+            var url = 'https://pokeapi.co/api/v2/pokemon?offset=' + gen.offset + '&limit=' + gen.limit;
+            xhrGet(url, function(data) {
+                data.results.forEach(function(p) {
+                var parts = p.url.replace(/\/$/, '').split('/');
+                var id = parseInt(parts[parts.length - 1]);
+                if (!allPokemonData[p.name]) {
+                    allPokemonNames.push(p.name);
+                    allPokemonData[p.name] = { id: id, name: p.name };
+                }
+                });
+                loaded++;
+                if (loaded === total) {
+                console.log('* ' + allPokemonNames.length + ' Pokémon cargados');
+                }
+            });
+            });
+        }
+        }).catch(function(err) {
+        console.error('Error DB:', err);
+        });
+    });
+    </script>
+    </body>
+    </html>

@@ -1,0 +1,62 @@
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex | Agregar Entrenador</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+    </head>
+    <body>
+
+    <header>
+        <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokémon" />
+        <nav class="main-nav">
+            <a href="index.html" class="active">Pokédex</a>
+            <a href="trainers.html">Entrenadores</a>
+            <a href="add-trainer.html">+ Entrenador</a>
+            <a href="teams.html">Equipos</a>
+            <a href="add-team.html">+ Equipo</a>
+        </nav>
+    </header>
+
+    <main class="page active">
+        <h2 class="page-title"> + Nuevo Entrenador</h2>
+        <form id="trainerForm" class="form-card">
+        <div class="form-group">
+            <label for="trainerName">Nombre completo</label>
+            <input type="text" id="trainerName" placeholder="Ash Ketchum" required />
+        </div>
+        <div class="form-group">
+            <label for="trainerGender">Sexo</label>
+            <select id="trainerGender" required>
+            <option value="">Seleccionar…</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="trainerResidence">Lugar de residencia</label>
+            <input type="text" id="trainerResidence" placeholder="Pueblo Paleta" required />
+        </div>
+        <div class="form-group">
+            <label for="trainerPhoto">URL de la foto (opcional)</label>
+            <input type="url" id="trainerPhoto" placeholder="https://ejemplo.com/foto.jpg" />
+        </div>
+        <button type="submit" class="btn-primary">Guardar Entrenador</button>
+        </form>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/trainers.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initDB().catch(function(err) {
+        console.error('Error DB:', err);
+        });
+    });
+    </script>
+    </body>
+    </html>

@@ -1,0 +1,92 @@
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pokédex | Equipos</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
+        </head>
+        <body>
+
+        <header>
+            <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokémon" />
+            <nav class="main-nav">
+                <a href="index.html" class="active">Pokédex</a>
+                <a href="trainers.html">Entrenadores</a>
+                <a href="add-trainer.html">+ Entrenador</a>
+                <a href="teams.html">Equipos</a>
+                <a href="add-team.html">+ Equipo</a>
+            </nav>
+        </header>
+
+        <main class="page active">
+            <h2 class="page-title">🏆 Equipos Pokémon</h2>
+            <div id="teamsList" class="teams-grid">
+            <div class="empty-message">Cargando equipos…</div>
+            </div>
+        </main>
+
+        <!-- ═══ MODAL DE EQUIPO ═══ -->
+        <div id="teamModalOverlay" role="dialog" aria-modal="true" aria-labelledby="teamModalTitle">
+            <div id="teamModalBox">
+            <button id="teamModalClose" aria-label="Cerrar">✕</button>
+            <div id="teamModalHeader">
+                <h2 id="teamModalTitle">—</h2>
+            </div>
+            <div id="teamModalBody">
+                <img id="teamModalImg" src="" alt="" />
+                <div id="teamModalInfo">
+                <div class="info-row"><span class="lbl">Entrenador:</span><span id="tmTrainer">—</span></div>
+                <div class="info-row"><span class="lbl">Pokémon:</span></div>
+                <div id="tmPokemons" class="team-pokemon-list"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <script src="js/db.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/teams.js"></script>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initDB().then(function() {
+            // Cargar nombres de Pokémon (5 generaciones) si no están cargados
+            if (allPokemonNames.length === 0) {
+                var generations = [
+                { offset: 0, limit: 151 },
+                { offset: 151, limit: 100 },
+                { offset: 251, limit: 135 },
+                { offset: 386, limit: 107 },
+                { offset: 493, limit: 156 }
+                ];
+                var total = generations.length;
+                var loaded = 0;
+                generations.forEach(function(gen) {
+                var url = 'https://pokeapi.co/api/v2/pokemon?offset=' + gen.offset + '&limit=' + gen.limit;
+                xhrGet(url, function(data) {
+                    data.results.forEach(function(p) {
+                    var parts = p.url.replace(/\/$/, '').split('/');
+                    var id = parseInt(parts[parts.length - 1]);
+                    if (!allPokemonData[p.name]) {
+                        allPokemonNames.push(p.name);
+                        allPokemonData[p.name] = { id: id, name: p.name };
+                    }
+                    });
+                    loaded++;
+                    if (loaded === total) {
+                    renderTeams();
+                    }
+                });
+                });
+            } else {
+                renderTeams();
+            }
+            }).catch(function(err) {
+            console.error('Error DB:', err);
+            });
+        });
+        </script>
+        </body>
+        </html>
